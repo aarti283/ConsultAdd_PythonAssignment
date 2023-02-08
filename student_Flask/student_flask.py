@@ -1,5 +1,5 @@
 from flask import Flask,render_template,request,redirect
-from models import db,EmployeeModel
+from models import db,StudentModel
  
 app = Flask(__name__)
  
@@ -17,54 +17,54 @@ def create():
         return render_template('createpage.html')
  
     if request.method == 'POST':
-        employee_id = request.form['employee_id']
+        student_id = request.form['student_id']
         name = request.form['name']
         age = request.form['age']
         position = request.form['position']
-        employee = EmployeeModel(employee_id=employee_id, name=name, age=age, position = position)
-        db.session.add(employee)
+        student = StudentModel(student_id=student_id, name=name, age=age, position = position)
+        db.session.add(student)
         db.session.commit()
         return redirect('/data')
  
 
 @app.route('/data')
 def RetrieveList():
-    employees = EmployeeModel.query.all()
-    return render_template('datalist.html',employees = employees)
+    students = StudentModel.query.all()
+    return render_template('datalist.html',students = students)
  
  
 @app.route('/data/<int:id>')
-def RetrieveEmployee(id):
-    employee = EmployeeModel.query.filter_by(employee_id=id).first()
-    if employee:
-        return render_template('data.html', employee = employee)
-    return f"Employee with id ={id} Doenst exist"
+def RetrieveStudent(id):
+    student = StudentModel.query.filter_by(student_id=id).first()
+    if student:
+        return render_template('data.html', student = student)
+    return f"student with id ={id} Doenst exist"
  
  
 @app.route('/data/<int:id>/update',methods = ['GET','POST'])
 def update(id):
-    employee = EmployeeModel.query.filter_by(employee_id=id).first()
+    student = StudentModel.query.filter_by(student_id=id).first()
     if request.method == 'POST':
-        if employee:
-            db.session.delete(employee)
+        if student:
+            db.session.delete(student)
             db.session.commit()
             name = request.form['name']
             age = request.form['age']
             position = request.form['position']
-            employee = EmployeeModel(employee_id=id, name=name, age=age, position = position)
-            db.session.add(employee)
+            student = StudentModel(student_id=id, name=name, age=age, position = position)
+            db.session.add(student)
             db.session.commit()
             return redirect(f'/data/{id}')
-        return f"Employee with id = {id} Does nit exist"
-    return render_template('update.html', employee = employee)
+        return f"student with id = {id} Does nit exist"
+    return render_template('update.html', student = student)
  
  
 @app.route('/data/<int:id>/delete', methods=['GET','POST'])
 def delete(id):
-    employee = EmployeeModel.query.filter_by(employee_id=id).first()
+    student = StudentModel.query.filter_by(student_id=id).first()
     if request.method == 'POST':
-        if employee:
-            db.session.delete(employee)
+        if student:
+            db.session.delete(student)
             db.session.commit()
             return redirect('/data')
         abort(404)
